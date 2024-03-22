@@ -1,18 +1,11 @@
 package io.hawt.tests.features.pageobjects.pages;
 
-import static com.codeborne.selenide.Condition.editable;
-import static com.codeborne.selenide.Condition.enabled;
-import static com.codeborne.selenide.Condition.exist;
-import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.$;
-
-import org.assertj.core.api.Assertions;
-
 import com.codeborne.selenide.SelenideElement;
 import com.codeborne.selenide.WebDriverRunner;
-import com.codeborne.selenide.ex.ElementNotFound;
+import io.hawt.tests.features.pageobjects.ScreenRecorder.MyScreenRecorder;
 
-import java.time.Duration;
+import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Selenide.$;
 
 /**
  * Represents a Login page.
@@ -26,25 +19,25 @@ public class LoginPage {
     /**
      * Login to hawtio as given user with given password.
      */
-    public void login(String username, String password) {
-        try {
-            loginDiv.shouldBe(visible, Duration.ofSeconds(5)).should(exist);
+    public void login(String username, String password) throws Exception {
+        MyScreenRecorder.startRecording("testhujestLogin");
+        if (WebDriverRunner.url().contains("login")) {
+            loginDiv.shouldBe(visible).should(exist);
             loginInput.shouldBe(editable).setValue(username);
             passwordInput.shouldBe(editable).setValue(password);
             loginButton.shouldBe(enabled).click();
-        } catch (ElementNotFound e) {
-            Assertions.assertThat(WebDriverRunner.url())
-                .withFailMessage(() -> "Failed to login on login page: " + e)
-                .doesNotContain("login");
         }
+        MyScreenRecorder.stopRecording();
     }
 
     /**
      * Check whether the Login page is open and active
      */
-    public void loginPageIsOpened() {
+    public void loginPageIsOpened() throws Exception {
+        MyScreenRecorder.startRecording("testhujestOpen");
         loginInput.shouldBe(editable).should(exist);
         passwordInput.shouldBe(editable);
         loginButton.shouldBe(enabled);
+        MyScreenRecorder.stopRecording();
     }
 }

@@ -1,27 +1,22 @@
 package io.hawt.tests.features.setup;
 
-import static com.codeborne.selenide.Condition.exist;
-import static com.codeborne.selenide.Condition.interactable;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.sleep;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.codeborne.selenide.Selenide;
-
 import io.hawt.tests.features.config.TestConfiguration;
 import io.hawt.tests.features.hooks.DeployAppHook;
 import io.hawt.tests.features.openshift.OpenshiftClient;
 import io.hawt.tests.features.pageobjects.fragments.Panel;
 import io.hawt.tests.features.pageobjects.pages.ConnectPage;
+import io.hawt.tests.features.pageobjects.pages.LoginPage;
 import io.hawt.tests.features.pageobjects.pages.openshift.HawtioOnlineLoginPage;
 import io.hawt.tests.features.pageobjects.pages.openshift.HawtioOnlinePage;
-import io.hawt.tests.features.pageobjects.pages.LoginPage;
 import io.hawt.tests.features.setup.deployment.AppDeployment;
 import io.hawt.tests.features.setup.deployment.OpenshiftDeployment;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.time.Duration;
+import static com.codeborne.selenide.Condition.exist;
+import static com.codeborne.selenide.Condition.interactable;
+import static com.codeborne.selenide.Selenide.$;
 
 public class LoginLogout {
     private static final Panel panel = new Panel();
@@ -45,7 +40,11 @@ public class LoginLogout {
             Selenide.open(DeployAppHook.getBaseURL(), HawtioOnlineLoginPage.class)
                 .login(TestConfiguration.getOpenshiftUsername(), TestConfiguration.getOpenshiftPassword());
         } else {
-            Selenide.open(DeployAppHook.getBaseURL() + TestConfiguration.getUrlSuffix() + "/connect", LoginPage.class).login(username, password);
+            try {
+                Selenide.open(DeployAppHook.getBaseURL() + TestConfiguration.getUrlSuffix() + "/connect", LoginPage.class).login(username, password);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
 
         if (TestConfiguration.getConnectUrl() != null) {
@@ -63,7 +62,11 @@ public class LoginLogout {
      */
     public static void logout() {
         LOG.info("Logging out from Hawtio");
-        panel.logout().loginPageIsOpened();
+        try {
+            panel.logout().loginPageIsOpened();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
