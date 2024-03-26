@@ -44,7 +44,7 @@ public class MyScreenRecorder extends ScreenRecorder {
 
     }
 
-    public static void startRecording(String methodName) throws Exception {
+    public static void startRecording(String methodName) {
         File file = new File("./recordings/");
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -56,21 +56,28 @@ public class MyScreenRecorder extends ScreenRecorder {
         GraphicsConfiguration gc = GraphicsEnvironment.getLocalGraphicsEnvironment().
             getDefaultScreenDevice()
             .getDefaultConfiguration();
+        try {
+            screenRecorder = new MyScreenRecorder(gc, captureSize,
+                new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_AVI),
+                new Format(MediaTypeKey, MediaType.VIDEO, EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE,
+                    CompressorNameKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 24, FrameRateKey,
+                    Rational.valueOf(15), QualityKey, 1.0f, KeyFrameIntervalKey, 15 * 60),
+                new Format(MediaTypeKey, MediaType.VIDEO, EncodingKey, "black", FrameRateKey, Rational.valueOf(30)),
+                null, file, methodName);
 
-        screenRecorder = new MyScreenRecorder(gc, captureSize,
-            new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_MP4),
-            new Format(MediaTypeKey, MediaType.VIDEO, EncodingKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE,
-                CompressorNameKey, ENCODING_AVI_TECHSMITH_SCREEN_CAPTURE, DepthKey, 24, FrameRateKey,
-                Rational.valueOf(15), QualityKey, 1.0f, KeyFrameIntervalKey, 15 * 60),
-            new Format(MediaTypeKey, MediaType.VIDEO, EncodingKey, "black", FrameRateKey, Rational.valueOf(30)),
-            null, file, methodName);
-
-        screenRecorder.start();
-
+            screenRecorder.start();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public static void stopRecording() throws Exception {
-        screenRecorder.stop();
+    public static void stopRecording() {
+        try {
+            screenRecorder.stop();
+        } catch (Exception e){
+            throw new RuntimeException(e);
+        }
+
     }
 
 }

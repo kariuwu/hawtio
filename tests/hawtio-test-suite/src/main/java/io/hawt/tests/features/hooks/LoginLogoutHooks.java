@@ -4,6 +4,7 @@ import com.codeborne.selenide.Selenide;
 
 import io.cucumber.java.Before;
 import io.hawt.tests.features.config.TestConfiguration;
+import io.hawt.tests.features.pageobjects.ScreenRecorder.MyScreenRecorder;
 import io.hawt.tests.features.setup.LoginLogout;
 import io.hawt.tests.features.setup.WebDriver;
 
@@ -14,9 +15,11 @@ public class LoginLogoutHooks {
     @Before
     public static void before() {
         if (!init) {
+            MyScreenRecorder.startRecording("Weloggedin");
             WebDriver.setup();
             LoginLogout.login(TestConfiguration.getAppUsername(), TestConfiguration.getAppPassword());
             init = true;
+            MyScreenRecorder.stopRecording();
         } else {
             if (Selenide.webdriver().driver().getWebDriver().getCurrentUrl().contains("login")) {
                 LoginLogout.login(TestConfiguration.getAppUsername(), TestConfiguration.getAppPassword());
