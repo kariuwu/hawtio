@@ -15,8 +15,8 @@ public class LoginLogoutHooks {
     @Before
     public static void before() {
         if (!init) {
-            MyScreenRecorder.startRecording("Weloggedin");
             WebDriver.setup();
+            MyScreenRecorder.startRecording("Weloggedin");
             LoginLogout.login(TestConfiguration.getAppUsername(), TestConfiguration.getAppPassword());
             init = true;
             MyScreenRecorder.stopRecording();
