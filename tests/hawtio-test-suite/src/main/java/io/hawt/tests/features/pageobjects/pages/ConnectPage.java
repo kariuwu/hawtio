@@ -1,18 +1,20 @@
 package io.hawt.tests.features.pageobjects.pages;
 
-import static com.codeborne.selenide.Selenide.$;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.ex.ConditionNotMetError;
+import io.hawt.tests.features.config.TestConfiguration;
+import io.hawt.tests.features.openshift.WaitUtils;
+import io.hawt.tests.features.utils.ByUtils;
+import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.time.Duration;
 
-import io.hawt.tests.features.config.TestConfiguration;
-import io.hawt.tests.features.utils.ByUtils;
+import static com.codeborne.selenide.Selenide.$;
 
 public class ConnectPage extends HawtioPage {
 
@@ -26,9 +28,12 @@ public class ConnectPage extends HawtioPage {
 
     private static final By FOOTER_BUTTON = By.cssSelector("footer button.pf-m-primary");
 
+    private static final Logger logger = LoggerFactory.getLogger(ConnectPage.class);
     public void addConnection(String name, URL connection) {
         //Don't try to create the same connection twice
-        if ($(ByUtils.byAttribute("rowid", "connection " + name)).exists()) {
+        try {
+            $(ByUtils.byAttribute("rowid", "connection " + name)).shouldNot(Condition.exist, Duration.ofSeconds(10));
+        } catch (ConditionNotMetError e) {
             return;
         }
 
@@ -56,11 +61,14 @@ public class ConnectPage extends HawtioPage {
         final String username = TestConfiguration.getConnectAppUsername();
         final String password = TestConfiguration.getConnectAppPassword();
 
-        $(CONNECTION_LIST).$(connectionSelector).shouldBe(Condition.interactable, Duration.ofSeconds(5))
-            .click();
+        WaitUtils.untilAsserted(() -> {
+            $(CONNECTION_LIST).$(connectionSelector).shouldBe(Condition.interactable, Duration.ofSeconds(10))
+                .click();
 
-        Selenide.Wait().until(ExpectedConditions.numberOfWindowsToBe(2));
-        Selenide.switchTo().window(1);
+            Selenide.Wait().until(ExpectedConditions.numberOfWindowsToBe(2));
+            Selenide.switchTo().window(1);
+
+        }, Duration.ofSeconds(5));
 
         $(CONNECTION_LOGIN_FORM).$(By.id("connect-login-form-username")).setValue(username);
         $(CONNECTION_LOGIN_FORM).$(By.id("connect-login-form-password")).setValue(password);
