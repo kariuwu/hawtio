@@ -61,14 +61,14 @@ public class ConnectPage extends HawtioPage {
         final String username = TestConfiguration.getConnectAppUsername();
         final String password = TestConfiguration.getConnectAppPassword();
 
-        WaitUtils.untilAsserted(() -> {
+        WaitUtils.withRetry(() -> {
             $(CONNECTION_LIST).$(connectionSelector).shouldBe(Condition.interactable, Duration.ofSeconds(10))
                 .click();
 
             Selenide.Wait().until(ExpectedConditions.numberOfWindowsToBe(2));
             Selenide.switchTo().window(1);
 
-        }, Duration.ofSeconds(5));
+        }, 5, Duration.ofSeconds(5));
 
         $(CONNECTION_LOGIN_FORM).$(By.id("connect-login-form-username")).setValue(username);
         $(CONNECTION_LOGIN_FORM).$(By.id("connect-login-form-password")).setValue(password);
