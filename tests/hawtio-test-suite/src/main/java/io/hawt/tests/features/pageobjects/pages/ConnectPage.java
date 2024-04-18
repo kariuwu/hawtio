@@ -4,7 +4,6 @@ import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.ex.ConditionNotMetError;
 import io.hawt.tests.features.config.TestConfiguration;
-import io.hawt.tests.features.openshift.WaitUtils;
 import io.hawt.tests.features.utils.ByUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -57,17 +56,16 @@ public class ConnectPage extends HawtioPage {
 
         final String username = TestConfiguration.getConnectAppUsername();
         final String password = TestConfiguration.getConnectAppPassword();
+        $(CONNECTION_LIST).$(connectionSelector).$(By.className("pf-m-primary")).shouldBe(Condition.interactable, Duration.ofSeconds(5))
+            .click();
 
-        WaitUtils.withRetry(() -> {
-            $(CONNECTION_LIST).$(connectionSelector).shouldBe(Condition.interactable, Duration.ofSeconds(5))
-                .click();
-
-            Selenide.Wait().until(ExpectedConditions.numberOfWindowsToBe(2));
-            Selenide.switchTo().window(1);
-        }, 5, Duration.ofSeconds(5));
+        Selenide.Wait().until(ExpectedConditions.numberOfWindowsToBe(2));
+        Selenide.switchTo().window(1);
 
         $(CONNECTION_LOGIN_FORM).$(By.id("connect-login-form-username")).setValue(username);
         $(CONNECTION_LOGIN_FORM).$(By.id("connect-login-form-password")).setValue(password);
         $(MODAL).$(FOOTER_BUTTON).shouldBe(Condition.interactable, Duration.ofSeconds(5)).click();
     }
+
+
 }
