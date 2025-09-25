@@ -9,6 +9,7 @@ on:
   push:
     branches:
       - 4.x
+      - kariuwu-ci-test
     paths-ignore:
       - "**.md"
 
