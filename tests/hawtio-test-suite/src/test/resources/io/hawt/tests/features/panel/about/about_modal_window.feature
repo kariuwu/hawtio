@@ -1,6 +1,6 @@
 Feature: Check whether all data is presented and displayed correctly in About modal window.
 
-  @notOnline
+  @notOnline @notJBang
   Scenario Outline: Check that the titles are presented in About modal window
     Given User clicks on "About" option in Question mark drop-down menu
     Then The "Hawtio Management Console" header is presented in About modal window
