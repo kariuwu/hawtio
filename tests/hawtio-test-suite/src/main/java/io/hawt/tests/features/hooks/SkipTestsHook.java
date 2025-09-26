@@ -9,12 +9,30 @@ import org.junit.jupiter.api.Assumptions;
 
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.WebDriverRunner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Objects;
 
 public class SkipTestsHook {
 
+    private static final Logger LOG = LoggerFactory.getLogger(TestConfiguration.class);
     @Before("@notHawtioNext")
     public void skipHawtioNextTests() {
         Assumptions.assumeTrue(System.getProperty("hawtio-next-ci") == null);
+    }
+
+//    @Before("@notJBang")
+//    public void skipNotJBangTests() {
+//        LOG.info(String.valueOf(System.getProperty("io.hawt.test.app.connect.url")));
+//        Assumptions.assumeTrue(Objects.equals(System.getProperty("io.hawt.test.app.connect.url"), "http://localhost:8080/hawtio/jolokia")
+//            || Objects.equals(System.getProperty("io.hawt.test.app.connect.url"), "http://localhost:10001/actuator/hawtio/jolokia"));
+//    }
+
+    @Before("@notJBang")
+    public void skipNotJBangTests() {
+        LOG.info(String.valueOf(System.getProperty("io.hawt.test.app.connect.url")));
+        Assumptions.assumeTrue(System.getProperty("io.hawt.test.app.connect.url") == null);
     }
 
     @Before("@quarkus")
