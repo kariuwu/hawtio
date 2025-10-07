@@ -30,4 +30,13 @@ Feature: Checking the functionality of a Preferences tab
     And User confirms resetting the setting of Hawtio
     Then User is presented with a successful alert message
 
+  Scenario: Check that Connect tab works
+    Given User clicks on "Preferences" option in hawtio drop-down menu
+    And User is on "Console Logs" tab of Preferences page
+    When User slides log level
+    Then User adds child logger
+    And User sees added child logger
+    And User is able to delete child logger
+
+
 
