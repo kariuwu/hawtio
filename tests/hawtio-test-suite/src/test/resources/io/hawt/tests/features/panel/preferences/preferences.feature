@@ -1,4 +1,4 @@
-@preferences
+@preferences @notJBang
 Feature: Checking the functionality of a Preferences tab
 
   Scenario Outline: Check that the tabs contain the data
